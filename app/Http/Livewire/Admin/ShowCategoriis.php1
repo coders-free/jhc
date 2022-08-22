@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Http\Livewire\Admin;
+
+use App\Models\Categorii;
+use App\Models\Subcategorii;
+use Livewire\Component;
+use Illuminate\Support\Str;
+
+class ShowCategoriis extends Component
+{
+    public $categorii, $subcategoriis;
+
+    protected $rules = [
+        'createForm.name' => 'required',
+        'createForm.slug' => 'required|unique:categoriis,slug',
+        'createForm.color' => 'required',
+        'createForm.size' => 'required',
+
+    ];
+
+
+    protected $validationAttributes = [
+        'createForm.name' => 'nombre',
+        'createForm.slug' => 'slug',
+
+    ];
+
+    public $createForm = [
+       
+        'name' => null,
+        'slug' => null,
+        'color' => false,
+        'size' => false
+       
+
+    ];
+
+    public function mount(Categorii $categorii){
+        $this->categorii = $categorii;
+        $this->getSubcategoriis();
+    }
+
+    
+    public function updatedCreateFormName($value){
+        $this->createForm['slug'] = Str::slug($value);
+    }
+
+  
+
+    public function getSubcategoriis(){
+        $this->subcategoriis = Subcategorii::where('categorii_id', $this->categorii->id)->get();
+    }
+
+    public function edit( Subcategorii $subcategorii){
+
+    }
+
+    public function save(){
+       $this->validate();
+
+
+    }
+    public function render()
+    {
+        return view('livewire.admin.show-categoriis')->layout('layouts.admin');
+    }
+}
